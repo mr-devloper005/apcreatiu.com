@@ -109,16 +109,18 @@ export default function LocalPostDetailPage() {
 
   if (!post || !taskConfig) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="site-shell">
         <NavbarShell />
-        <main className="mx-auto max-w-3xl px-4 py-20 text-center">
-          <h1 className="text-2xl font-semibold text-foreground">Post not found</h1>
-          <p className="mt-2 text-muted-foreground">
+        <main className="flex flex-1 flex-col items-center justify-center px-4 py-20">
+          <div className="site-surface-card max-w-md p-10 text-center">
+          <h1 className="text-2xl font-semibold text-neutral-950">Post not found</h1>
+          <p className="mt-2 text-neutral-600">
             This local post isn’t available on this device.
           </p>
-          <Button className="mt-6" asChild>
+          <Button className="mt-6 bg-neutral-950 text-white hover:bg-neutral-800" asChild>
             <Link href="/">Back home</Link>
           </Button>
+          </div>
         </main>
         <Footer />
       </div>
@@ -135,9 +137,10 @@ export default function LocalPostDetailPage() {
   const mapEmbedUrl = buildMapEmbedUrl(content.latitude, content.longitude, location);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="site-shell">
       <NavbarShell />
-      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <main className="flex flex-1 flex-col">
+        <div className="site-container py-10">
         <Link
           href={taskConfig.route}
           className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
@@ -267,6 +270,7 @@ export default function LocalPostDetailPage() {
             </div>
           </div>
         )}
+        </div>
       </main>
       <Footer />
     </div>

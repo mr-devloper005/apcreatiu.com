@@ -38,14 +38,14 @@ export default function BookmarkCollectionDetailPage() {
 
   if (!collection) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="site-shell">
         <NavbarShell />
-        <main className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
-          <Card className="border-border bg-card">
+        <main className="flex flex-1 flex-col items-center justify-center px-4 py-20">
+          <Card className="site-surface-card max-w-md border-0 shadow-sm">
             <CardContent className="p-10 text-center">
-              <h1 className="text-2xl font-semibold text-foreground">Collection not found</h1>
-              <p className="mt-2 text-muted-foreground">Try exploring other bookmark collections.</p>
-              <Button className="mt-6" asChild>
+              <h1 className="text-2xl font-semibold text-neutral-950">Collection not found</h1>
+              <p className="mt-2 text-neutral-600">Try exploring other bookmark collections.</p>
+              <Button className="mt-6 bg-neutral-950 text-white hover:bg-neutral-800" asChild>
                 <Link href="/sbm/collections">Back to collections</Link>
               </Button>
             </CardContent>
@@ -57,15 +57,15 @@ export default function BookmarkCollectionDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="site-shell">
       <NavbarShell />
 
-      <main>
-        <section className="border-b border-border bg-secondary/30">
-          <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <main className="flex flex-1 flex-col">
+        <header className="site-page-header">
+          <div className="site-page-header-inner">
             <Link
               href="/sbm/collections"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+              className="inline-flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-neutral-950"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to collections
@@ -92,9 +92,9 @@ export default function BookmarkCollectionDetailPage() {
               </div>
             </div>
           </div>
-        </section>
+        </header>
 
-        <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+        <section className="site-container py-10">
           {collection.bookmarks.length === 0 ? (
             <Card className="border-border bg-card">
               <CardContent className="p-8 text-center">

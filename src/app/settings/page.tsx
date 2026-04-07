@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { NavbarShell } from "@/components/shared/navbar-shell"
+import { Footer } from "@/components/shared/footer"
 import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/components/ui/use-toast"
 import { loadFromStorage, saveToStorage, storageKeys } from "@/lib/local-storage"
@@ -236,13 +237,18 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="site-shell">
       <NavbarShell />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-foreground mb-8">Settings</h1>
+      <main className="flex flex-1 flex-col">
+        <header className="site-page-header">
+          <div className="site-page-header-inner pb-6 sm:pb-8">
+            <h1 className="font-sans text-3xl font-bold tracking-tight text-neutral-950">Settings</h1>
+          </div>
+        </header>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="site-container py-8">
+        <div className="flex flex-col gap-8 lg:flex-row">
           {/* Sidebar */}
           <div className="lg:w-64 flex-shrink-0">
             <nav className="space-y-1">
@@ -279,7 +285,7 @@ export default function SettingsPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.2 }}
-              className="bg-card rounded-xl border border-border p-6"
+              className="site-surface-card p-6"
             >
               {/* Profile Section */}
               {activeSection === "profile" && (
@@ -763,6 +769,8 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      </main>
+      <Footer />
     </div>
   )
 }

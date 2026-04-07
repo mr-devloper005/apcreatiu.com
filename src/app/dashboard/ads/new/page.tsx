@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { NavbarShell } from "@/components/shared/navbar-shell"
+import { Footer } from "@/components/shared/footer"
 import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/components/ui/use-toast"
 import { loadFromStorage, saveToStorage, storageKeys } from "@/lib/local-storage"
@@ -189,10 +190,12 @@ export default function NewAdPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="site-shell">
       <NavbarShell />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex flex-1 flex-col">
+      <div className="site-container py-8">
+        <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
@@ -213,7 +216,7 @@ export default function NewAdPage() {
               <Save className="h-4 w-4 mr-2" />
               {isSaving ? "Saving..." : "Save Draft"}
             </Button>
-            <Button onClick={handlePublish} disabled={isPublishing}>
+            <Button className="bg-neutral-950 text-white hover:bg-neutral-800" onClick={handlePublish} disabled={isPublishing}>
               {isPublishing ? "Publishing..." : "Publish Ad"}
             </Button>
           </div>
@@ -596,7 +599,10 @@ export default function NewAdPage() {
             </motion.div>
           </div>
         </div>
+        </div>
       </div>
+      </main>
+      <Footer />
     </div>
   )
 }
