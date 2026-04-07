@@ -4,6 +4,7 @@ import { ExternalLink, FileText, Mail, MapPin, Tag } from "lucide-react";
 import type { SitePost } from "@/lib/site-connector";
 import { CATEGORY_OPTIONS, normalizeCategory } from "@/lib/categories";
 import type { TaskKey } from "@/lib/site-config";
+import { cn } from "@/lib/utils";
 
 type ListingContent = {
   location?: string;
@@ -56,11 +57,13 @@ export function TaskPostCard({
   href,
   taskKey,
   compact,
+  className,
 }: {
   post: SitePost;
   href: string;
   taskKey?: TaskKey;
   compact?: boolean;
+  className?: string;
 }) {
   const content = getContent(post);
   const image = getImageUrl(post, content);
@@ -94,7 +97,10 @@ export function TaskPostCard({
     return (
       <Link
         href={href}
-        className="group flex h-full flex-row items-start gap-4 overflow-hidden rounded-[1.75rem] border border-[rgba(110,26,55,0.12)] bg-[linear-gradient(180deg,rgba(255,252,247,0.98),rgba(255,247,239,0.92))] p-5 shadow-[0_18px_48px_rgba(85,35,42,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(85,35,42,0.12)]"
+        className={cn(
+          "group flex h-full flex-row items-start gap-4 overflow-hidden rounded-[1.75rem] border border-[rgba(110,26,55,0.12)] bg-[linear-gradient(180deg,rgba(255,252,247,0.98),rgba(255,247,239,0.92))] p-5 shadow-[0_18px_48px_rgba(85,35,42,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(85,35,42,0.12)]",
+          className,
+        )}
       >
         <div className="mt-1 rounded-full bg-[rgba(110,26,55,0.08)] p-2.5 text-[#6e1a37] transition group-hover:bg-[#6e1a37] group-hover:text-white">
           <ExternalLink className="h-4 w-4" />
@@ -132,7 +138,10 @@ export function TaskPostCard({
   return (
     <Link
       href={href}
-      className="group flex h-full flex-col overflow-hidden rounded-[1.9rem] border border-[rgba(110,26,55,0.12)] bg-[linear-gradient(180deg,rgba(255,252,247,0.98),rgba(255,247,239,0.92))] shadow-[0_20px_60px_rgba(85,35,42,0.08)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(110,26,55,0.18)] hover:shadow-[0_24px_70px_rgba(85,35,42,0.14)]"
+      className={cn(
+        "group flex h-full flex-col overflow-hidden rounded-[1.9rem] border border-[rgba(110,26,55,0.12)] bg-[linear-gradient(180deg,rgba(255,252,247,0.98),rgba(255,247,239,0.92))] shadow-[0_20px_60px_rgba(85,35,42,0.08)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(110,26,55,0.18)] hover:shadow-[0_24px_70px_rgba(85,35,42,0.14)]",
+        className,
+      )}
     >
       <div className={`relative ${imageAspect} overflow-hidden bg-[#ede2dc]`}>
         <ContentImage

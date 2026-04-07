@@ -107,11 +107,12 @@ export default async function ProfileDetailPage({ params }: { params: Promise<{ 
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="site-shell">
       <NavbarShell />
-      <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-10 sm:px-6 lg:px-8">
+      <main className="flex flex-1 flex-col">
+        <div className="site-container py-10 pb-16">
         <SchemaJsonLd data={breadcrumbData} />
-        <section className="rounded-3xl border border-border/60 bg-white/90 p-8 shadow-sm md:p-12">
+        <section className="site-surface-card p-8 md:p-12">
           <div className="grid gap-8 md:grid-cols-[200px_1fr] md:items-start">
             <div className="flex justify-center md:justify-start">
               <div className="relative h-36 w-36 overflow-hidden rounded-full border border-border/70 bg-muted">
@@ -186,6 +187,7 @@ export default async function ProfileDetailPage({ params }: { params: Promise<{ 
             </nav>
           </section>
         ) : null}
+        </div>
       </main>
       <Footer />
     </div>

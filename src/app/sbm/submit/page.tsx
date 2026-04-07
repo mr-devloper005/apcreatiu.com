@@ -110,29 +110,29 @@ export default function SubmitBookmarkPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="site-shell">
       <NavbarShell />
 
-      <main>
-        <section className="border-b border-border bg-secondary/30">
-          <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Sparkles className="h-4 w-4 text-accent" />
+      <main className="flex flex-1 flex-col">
+        <header className="site-page-header">
+          <div className="site-page-header-inner">
+            <div className="flex items-center gap-2 text-sm font-medium text-neutral-600">
+              <Sparkles className="h-4 w-4 text-neutral-700" />
               Submit a Bookmark
             </div>
-            <h1 className="mt-2 text-3xl font-bold text-foreground">Share a link with the community.</h1>
-            <p className="mt-2 text-muted-foreground">
+            <h1 className="mt-2 font-sans text-3xl font-bold tracking-tight text-neutral-950">Share a link with the community.</h1>
+            <p className="mt-2 text-neutral-600">
               Add a short description, pick a category, and tag it for easy discovery.
             </p>
           </div>
-        </section>
+        </header>
 
-        <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+        <section className="site-container py-10">
+          <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[1fr_320px]">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-xl border border-border bg-card p-6"
+              className="site-surface-card p-6"
             >
               <form
                 className="space-y-5"
@@ -197,7 +197,7 @@ export default function SubmitBookmarkPage() {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <Button type="submit">Submit Bookmark</Button>
+                  <Button type="submit" className="bg-neutral-950 text-white hover:bg-neutral-800">Submit Bookmark</Button>
                   <Button
                     type="button"
                     variant="outline"
@@ -219,7 +219,7 @@ export default function SubmitBookmarkPage() {
             </motion.div>
 
             <div className="space-y-6">
-              <div className="rounded-xl border border-border bg-secondary/30 p-5">
+              <div className="rounded-xl border border-neutral-200/90 bg-neutral-100/80 p-5 shadow-sm">
                 <h3 className="text-base font-semibold text-foreground">Submission Tips</h3>
                 <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                   <li>Keep titles short and descriptive.</li>
@@ -227,7 +227,7 @@ export default function SubmitBookmarkPage() {
                   <li>Add 3-5 tags to improve discoverability.</li>
                 </ul>
               </div>
-              <div className="rounded-xl border border-border bg-card p-5">
+              <div className="site-surface-card p-5">
                 <h4 className="text-sm font-semibold text-foreground">Preview Checklist</h4>
                 <p className="mt-2 text-sm text-muted-foreground">
                   Once submitted, your link will appear in Trending or Latest based on community votes.

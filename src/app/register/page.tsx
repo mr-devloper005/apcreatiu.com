@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/lib/auth-context"
+import { NavbarShell } from "@/components/shared/navbar-shell"
+import { Footer } from "@/components/shared/footer"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -34,22 +36,24 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto flex min-h-screen max-w-md items-center px-6">
+    <div className="site-shell">
+      <NavbarShell />
+      <main className="flex flex-1 flex-col items-center justify-center px-4 py-12 sm:px-6">
+        <div className="w-full max-w-md">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="w-full rounded-2xl border border-border bg-card p-8 shadow-sm"
+          className="site-surface-card w-full p-8"
         >
           <div className="mb-6">
-            <Link href="/" className="text-lg font-semibold text-foreground">
+            <Link href="/" className="text-lg font-semibold text-neutral-900">
               Back to home
             </Link>
           </div>
 
-          <h1 className="text-2xl font-semibold text-foreground">Create account</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h1 className="font-sans text-2xl font-bold tracking-tight text-neutral-950">Create account</h1>
+          <p className="mt-1 text-sm text-neutral-600">
             Create a profile to manage your account.
           </p>
 
@@ -108,20 +112,22 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full bg-neutral-950 text-white hover:bg-neutral-800" disabled={isLoading}>
               {isLoading ? "Creating..." : "Create account"}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
+          <p className="mt-6 text-center text-sm text-neutral-600">
             Already have an account?{" "}
-            <Link href="/login" className="text-primary hover:underline">
+            <Link href="/login" className="font-medium text-neutral-900 underline-offset-4 hover:underline">
               Sign in
             </Link>
           </p>
         </motion.div>
-      </div>
+        </div>
+      </main>
+      <Footer />
     </div>
   )
 }

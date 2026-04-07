@@ -29,10 +29,65 @@ export async function TaskListPage({
     name: post.title,
   }));
 
+  const categoryLabel =
+    normalizedCategory !== "all"
+      ? CATEGORY_OPTIONS.find((c) => c.slug === normalizedCategory)?.name ?? null
+      : null;
+
+  const headerEyebrow =
+    task === "listing" && categoryLabel ? categoryLabel : taskConfig?.label || task;
+  const headerTitle =
+    task === "listing" && categoryLabel
+      ? `${categoryLabel} business listings`
+      : taskConfig?.description || "Latest posts";
+  const headerSub =
+    task === "listing" && categoryLabel
+      ? `Businesses and services in the ${categoryLabel} category. Change the filter below to explore other industries.`
+      : "Browse by category to narrow results.";
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="site-shell">
       <NavbarShell />
-      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="site-page-header">
+        <div className="site-page-header-inner">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-neutral-500">
+                {headerEyebrow}
+              </p>
+              <h1 className="mt-2 font-sans text-3xl font-bold tracking-tight text-neutral-950 sm:text-4xl">
+                {headerTitle}
+              </h1>
+              <p className="mt-2 text-sm text-neutral-600">{headerSub}</p>
+            </div>
+            <form className="flex flex-wrap items-center gap-3" action={taskConfig?.route || "#"}>
+              <label className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                Category
+              </label>
+              <select
+                name="category"
+                defaultValue={normalizedCategory}
+                className="h-10 rounded-lg border border-neutral-200 bg-white px-3 text-sm text-neutral-900 shadow-sm"
+              >
+                <option value="all">All categories</option>
+                {CATEGORY_OPTIONS.map((item) => (
+                  <option key={item.slug} value={item.slug}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="h-10 rounded-lg bg-neutral-950 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-neutral-800"
+              >
+                Apply
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main className="site-container flex-1 py-10 sm:py-12">
         {task === "listing" ? (
           <SchemaJsonLd
             data={[
@@ -63,57 +118,21 @@ export async function TaskListPage({
             }}
           />
         ) : null}
-        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-              {taskConfig?.label || task}
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold text-foreground">
-              {taskConfig?.description || "Latest posts"}
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Browse by category to narrow results.
-            </p>
-          </div>
-          <form className="flex items-center gap-3" action={taskConfig?.route || "#"}>
-            <label className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-              Category
-            </label>
-            <select
-              name="category"
-              defaultValue={normalizedCategory}
-              className="h-10 rounded-lg border border-border bg-card px-3 text-sm text-foreground"
-            >
-              <option value="all">All categories</option>
-              {CATEGORY_OPTIONS.map((item) => (
-                <option key={item.slug} value={item.slug}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-            <button
-              type="submit"
-              className="h-10 rounded-lg border border-border bg-secondary px-4 text-sm font-medium text-foreground"
-            >
-              Apply
-            </button>
-          </form>
-        </div>
 
         {intro ? (
-          <section className="mb-12 rounded-3xl border border-border bg-card p-6 sm:p-8">
-            <h2 className="text-2xl font-semibold text-foreground">{intro.title}</h2>
+          <section className="site-surface-card mb-12 p-6 sm:p-8">
+            <h2 className="font-sans text-2xl font-bold tracking-tight text-neutral-950">{intro.title}</h2>
             {intro.paragraphs.map((paragraph) => (
-              <p key={paragraph.slice(0, 40)} className="mt-4 text-sm leading-7 text-muted-foreground">
+              <p key={paragraph.slice(0, 40)} className="mt-4 text-sm leading-relaxed text-neutral-600">
                 {paragraph}
               </p>
             ))}
-            <div className="mt-4 flex flex-wrap gap-4 text-sm">
+            <div className="mt-6 flex flex-wrap gap-4 text-sm">
               {intro.links.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="font-semibold text-foreground hover:underline"
+                  className="font-semibold text-neutral-900 underline-offset-4 hover:underline"
                 >
                   {link.label}
                 </a>
