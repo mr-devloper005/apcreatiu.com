@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Plus, Save } from "lucide-react";
 import { NavbarShell } from "@/components/shared/navbar-shell";
+import { Footer } from "@/components/shared/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -182,17 +183,20 @@ export default function CreateTaskPage() {
 
   if (!taskConfig || !formConfig) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="site-shell">
         <NavbarShell />
-        <main className="mx-auto max-w-3xl px-4 py-16 text-center">
-          <h1 className="text-2xl font-semibold text-foreground">Task not available</h1>
-          <p className="mt-2 text-muted-foreground">
+        <main className="flex flex-1 flex-col items-center justify-center px-4 py-16">
+          <div className="site-surface-card max-w-md p-10 text-center">
+          <h1 className="text-2xl font-semibold text-neutral-950">Task not available</h1>
+          <p className="mt-2 text-neutral-600">
             This task is not enabled for the current site.
           </p>
-          <Button className="mt-6" asChild>
+          <Button className="mt-6 bg-neutral-950 text-white hover:bg-neutral-800" asChild>
             <Link href="/">Back home</Link>
           </Button>
+          </div>
         </main>
+        <Footer />
       </div>
     );
   }
@@ -271,9 +275,11 @@ export default function CreateTaskPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="site-shell">
       <NavbarShell />
-      <main className="mx-auto max-w-4xl px-4 py-12">
+      <main className="flex flex-1 flex-col">
+        <div className="site-container py-12">
+        <div className="mx-auto max-w-4xl">
         <div className="mb-8 flex items-center gap-3">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/">
@@ -281,12 +287,12 @@ export default function CreateTaskPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-semibold text-foreground">{formConfig.title}</h1>
-            <p className="text-sm text-muted-foreground">{formConfig.description}</p>
+            <h1 className="text-2xl font-semibold text-neutral-950">{formConfig.title}</h1>
+            <p className="text-sm text-neutral-600">{formConfig.description}</p>
           </div>
         </div>
 
-        <div className="rounded-3xl border border-border bg-card p-8 shadow-sm">
+        <div className="site-surface-card p-8">
           <div className="flex flex-wrap gap-2">
             <Badge variant="secondary">{taskConfig.label}</Badge>
             <Badge variant="outline">Local-only</Badge>
@@ -376,7 +382,7 @@ export default function CreateTaskPage() {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button onClick={handleSubmit}>
+            <Button className="bg-neutral-950 text-white hover:bg-neutral-800" onClick={handleSubmit}>
               <Save className="mr-2 h-4 w-4" />
               Save locally
             </Button>
@@ -388,7 +394,10 @@ export default function CreateTaskPage() {
             </Button>
           </div>
         </div>
+        </div>
+        </div>
       </main>
+      <Footer />
     </div>
   );
 }

@@ -30,20 +30,20 @@ export default function BookmarkCollectionsPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="site-shell">
       <NavbarShell />
 
-      <main>
-        <section className="border-b border-border bg-secondary/30">
-          <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <main className="flex flex-1 flex-col">
+        <header className="site-page-header">
+          <div className="site-page-header-inner">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-foreground">Bookmark Collections</h1>
-                <p className="mt-2 text-muted-foreground">
+                <h1 className="font-sans text-3xl font-bold tracking-tight text-neutral-950">Bookmark Collections</h1>
+                <p className="mt-2 text-neutral-600">
                   Organize saved links into curated folders for quick access.
                 </p>
               </div>
-              <Button className="gap-2" asChild>
+              <Button className="gap-2 bg-neutral-950 text-white hover:bg-neutral-800" asChild>
                 <Link href="/sbm/collections/new">
                   <FolderPlus className="h-4 w-4" />
                   New Collection
@@ -51,9 +51,9 @@ export default function BookmarkCollectionsPage() {
               </Button>
             </div>
           </div>
-        </section>
+        </header>
 
-        <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+        <section className="site-container py-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

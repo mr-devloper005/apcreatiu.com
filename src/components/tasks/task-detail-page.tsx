@@ -218,13 +218,13 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
   const schemaPayload = articleSchema ? [articleSchema, breadcrumbSchema] : breadcrumbSchema;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="site-shell">
       <NavbarShell />
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <main className="site-container flex-1 py-10 sm:py-12">
         <SchemaJsonLd data={schemaPayload} />
         <Link
           href={taskConfig?.route || "/"}
-          className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+          className="mb-8 inline-flex items-center text-sm font-medium text-neutral-600 transition hover:text-neutral-950"
         >
           ← Back to {taskConfig?.label || "posts"}
         </Link>
