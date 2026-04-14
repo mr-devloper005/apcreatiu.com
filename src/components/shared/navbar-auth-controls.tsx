@@ -45,7 +45,7 @@ export function NavbarAuthControls() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 border-neutral-200 bg-white">
           {SITE_CONFIG.tasks
-            .filter((task) => task.enabled)
+            .filter((task) => task.enabled && task.key === 'listing')
             .map((task) => {
             const Icon = taskIcons[task.key] || LayoutGrid
             return (
