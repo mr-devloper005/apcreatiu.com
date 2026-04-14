@@ -25,7 +25,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-3">
               <div className="h-11 w-11 overflow-hidden rounded-full border border-neutral-200 bg-white p-1 shadow-sm">
                 <img
-                  src="/favicon.png?v=20260401"
+                  src="/favicon.png?v=20260413"
                   alt={`${SITE_CONFIG.name} logo`}
                   width="44"
                   height="44"

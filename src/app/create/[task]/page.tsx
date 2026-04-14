@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Plus, Save } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Plus, Save, Sparkles } from "lucide-react";
 import { NavbarShell } from "@/components/shared/navbar-shell";
 import { Footer } from "@/components/shared/footer";
 import { Button } from "@/components/ui/button";
@@ -181,6 +181,8 @@ export default function CreateTaskPage() {
   const [values, setValues] = useState<Record<string, string>>({});
   const [uploadingPdf, setUploadingPdf] = useState(false);
 
+  const isListingFlow = taskKey === "listing";
+
   if (!taskConfig || !formConfig) {
     return (
       <div className="site-shell">
@@ -274,127 +276,202 @@ export default function CreateTaskPage() {
     router.push(`/local/${taskKey}/${post.slug}`);
   };
 
+  const formFields = (
+    <>
+      <div className="flex flex-wrap gap-2">
+        <Badge variant="secondary">{taskConfig.label}</Badge>
+        <Badge variant="outline">Local-only</Badge>
+      </div>
+
+      <div className="mt-6 grid gap-6">
+        {formConfig.fields.map((field) => (
+          <div key={field.key} className="grid gap-2">
+            <Label>
+              {field.label} {field.required ? <span className="text-red-500">*</span> : null}
+            </Label>
+            {field.type === "textarea" ? (
+              <Textarea
+                rows={4}
+                placeholder={field.placeholder}
+                value={values[field.key] || ""}
+                onChange={(event) => updateValue(field.key, event.target.value)}
+                className="border-2 border-slate-200 bg-white focus-visible:ring-2 focus-visible:ring-primary/30"
+              />
+            ) : field.type === "category" ? (
+              <select
+                value={values[field.key] || ""}
+                onChange={(event) => updateValue(field.key, event.target.value)}
+                className="h-11 rounded-lg border-2 border-slate-200 bg-white px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+              >
+                <option value="">Select category</option>
+                {CATEGORY_OPTIONS.map((option) => (
+                  <option key={option.slug} value={option.slug}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+            ) : field.type === "file" ? (
+              <div className="grid gap-3">
+                <Input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (!file) return;
+                    if (file.type !== "application/pdf") {
+                      toast({
+                        title: "Invalid file",
+                        description: "Please upload a PDF file.",
+                      });
+                      return;
+                    }
+                    const reader = new FileReader();
+                    setUploadingPdf(true);
+                    reader.onload = () => {
+                      const result = typeof reader.result === "string" ? reader.result : "";
+                      updateValue(field.key, result);
+                      setUploadingPdf(false);
+                      toast({
+                        title: "PDF uploaded",
+                        description: "File is stored locally.",
+                      });
+                    };
+                    reader.readAsDataURL(file);
+                  }}
+                />
+                <Input
+                  type="text"
+                  placeholder="Or paste a PDF URL"
+                  value={values[field.key] || ""}
+                  onChange={(event) => updateValue(field.key, event.target.value)}
+                />
+                {uploadingPdf ? <p className="text-xs text-muted-foreground">Uploading PDF…</p> : null}
+              </div>
+            ) : (
+              <Input
+                type={field.type === "number" ? "number" : "text"}
+                placeholder={
+                  field.type === "images" || field.type === "tags" || field.type === "highlights"
+                    ? "Separate values with commas"
+                    : field.placeholder
+                }
+                value={values[field.key] || ""}
+                onChange={(event) => updateValue(field.key, event.target.value)}
+                className="h-11 border-2 border-slate-200 bg-white focus-visible:ring-2 focus-visible:ring-primary/30"
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 flex flex-wrap gap-3">
+        <Button className="bg-neutral-950 text-white hover:bg-neutral-800" onClick={handleSubmit}>
+          <Save className="mr-2 h-4 w-4" />
+          Save locally
+        </Button>
+        <Button variant="ghost" asChild>
+          <Link href={taskConfig.route}>
+            View {taskConfig.label}
+            <Plus className="ml-2 h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+    </>
+  );
+
   return (
     <div className="site-shell">
       <NavbarShell />
       <main className="flex flex-1 flex-col">
-        <div className="site-container py-12">
-        <div className="mx-auto max-w-4xl">
-        <div className="mb-8 flex items-center gap-3">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href="/">
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-          </Button>
-          <div>
-            <h1 className="text-2xl font-semibold text-neutral-950">{formConfig.title}</h1>
-            <p className="text-sm text-neutral-600">{formConfig.description}</p>
-          </div>
-        </div>
-
-        <div className="site-surface-card p-8">
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">{taskConfig.label}</Badge>
-            <Badge variant="outline">Local-only</Badge>
-          </div>
-
-          <div className="mt-6 grid gap-6">
-            {formConfig.fields.map((field) => (
-              <div key={field.key} className="grid gap-2">
-                <Label>
-                  {field.label} {field.required ? <span className="text-red-500">*</span> : null}
-                </Label>
-                {field.type === "textarea" ? (
-                  <Textarea
-                    rows={4}
-                    placeholder={field.placeholder}
-                    value={values[field.key] || ""}
-                    onChange={(event) => updateValue(field.key, event.target.value)}
-                    className="border-2 border-slate-200 bg-white focus-visible:ring-2 focus-visible:ring-primary/30"
-                  />
-                ) : field.type === "category" ? (
-                  <select
-                    value={values[field.key] || ""}
-                    onChange={(event) => updateValue(field.key, event.target.value)}
-                    className="h-11 rounded-lg border-2 border-slate-200 bg-white px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
-                  >
-                    <option value="">Select category</option>
-                    {CATEGORY_OPTIONS.map((option) => (
-                      <option key={option.slug} value={option.slug}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                ) : field.type === "file" ? (
-                  <div className="grid gap-3">
-                    <Input
-                      type="file"
-                      accept="application/pdf"
-                      onChange={(event) => {
-                        const file = event.target.files?.[0];
-                        if (!file) return;
-                        if (file.type !== "application/pdf") {
-                          toast({
-                            title: "Invalid file",
-                            description: "Please upload a PDF file.",
-                          });
-                          return;
-                        }
-                        const reader = new FileReader();
-                        setUploadingPdf(true);
-                        reader.onload = () => {
-                          const result = typeof reader.result === "string" ? reader.result : "";
-                          updateValue(field.key, result);
-                          setUploadingPdf(false);
-                          toast({
-                            title: "PDF uploaded",
-                            description: "File is stored locally.",
-                          });
-                        };
-                        reader.readAsDataURL(file);
-                      }}
-                    />
-                    <Input
-                      type="text"
-                      placeholder="Or paste a PDF URL"
-                      value={values[field.key] || ""}
-                      onChange={(event) => updateValue(field.key, event.target.value)}
-                    />
-                    {uploadingPdf ? (
-                      <p className="text-xs text-muted-foreground">Uploading PDF…</p>
-                    ) : null}
-                  </div>
-                ) : (
-                  <Input
-                    type={field.type === "number" ? "number" : "text"}
-                    placeholder={
-                      field.type === "images" || field.type === "tags" || field.type === "highlights"
-                        ? "Separate values with commas"
-                        : field.placeholder
-                    }
-                    value={values[field.key] || ""}
-                    onChange={(event) => updateValue(field.key, event.target.value)}
-                    className="h-11 border-2 border-slate-200 bg-white focus-visible:ring-2 focus-visible:ring-primary/30"
-                  />
-                )}
+        {isListingFlow ? (
+          <section className="border-b border-amber-200/60 bg-gradient-to-br from-amber-50/80 via-white to-neutral-50">
+            <div className="site-container py-10 sm:py-12 lg:py-14">
+              <div className="mx-auto max-w-6xl">
+                <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/80 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-amber-900/90">
+                  <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                  List your business
+                </div>
+                <h1 className="mt-3 max-w-3xl font-[family-name:var(--font-fraunces)] text-3xl font-semibold tracking-tight text-neutral-950 sm:text-4xl lg:text-[2.65rem]">
+                  A polished profile that shows up when people are ready to choose
+                </h1>
+                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-base">
+                  {formConfig.description} Complete the fields below—your listing preview updates as you go, and you can
+                  refine details anytime after saving.
+                </p>
+                <ul className="mt-8 grid gap-3 sm:grid-cols-3">
+                  {[
+                    "Lead with a clear title and one-line promise in the summary.",
+                    "Match the category that best fits how customers search for you.",
+                    "Add phone, email, or site so visitors can act in one tap.",
+                  ].map((tip) => (
+                    <li
+                      key={tip}
+                      className="flex gap-2 rounded-xl border border-amber-200/50 bg-white/90 p-4 text-sm text-neutral-700 shadow-sm"
+                    >
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" aria-hidden />
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
-          </div>
+            </div>
+          </section>
+        ) : null}
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button className="bg-neutral-950 text-white hover:bg-neutral-800" onClick={handleSubmit}>
-              <Save className="mr-2 h-4 w-4" />
-              Save locally
-            </Button>
-            <Button variant="ghost" asChild>
-              <Link href={taskConfig.route}>
-                View {taskConfig.label}
-                <Plus className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+        <div className="site-container py-12">
+          <div className={`mx-auto ${isListingFlow ? "max-w-6xl" : "max-w-4xl"}`}>
+            <div className="mb-8 flex items-center gap-3">
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/">
+                  <ArrowLeft className="h-5 w-5" />
+                </Link>
+              </Button>
+              <div>
+                <h2
+                  className={
+                    isListingFlow
+                      ? "text-xl font-semibold text-neutral-950 sm:text-2xl"
+                      : "text-2xl font-semibold text-neutral-950"
+                  }
+                >
+                  {formConfig.title}
+                </h2>
+                {!isListingFlow ? <p className="text-sm text-neutral-600">{formConfig.description}</p> : null}
+              </div>
+            </div>
+
+            {isListingFlow ? (
+              <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+                <div className="site-surface-card p-8">{formFields}</div>
+                <aside className="space-y-4 lg:sticky lg:top-24">
+                  <div className="rounded-xl border border-amber-200/60 bg-gradient-to-b from-amber-50/50 to-white p-5 shadow-sm">
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-900/80">Before you publish</p>
+                    <ul className="mt-3 space-y-2 text-sm text-neutral-600">
+                      <li>Double-check hours for holidays and seasonal closures.</li>
+                      <li>Use real photos—stock images reduce trust in directories.</li>
+                      <li>Gallery URLs can be comma-separated; order is preserved.</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-xl border border-neutral-200/90 bg-white p-5 shadow-sm">
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-500">Need help?</p>
+                    <p className="mt-2 text-sm text-neutral-600">
+                      Browse guides in{" "}
+                      <Link href="/help" className="font-medium text-amber-800 underline-offset-4 hover:underline">
+                        Help &amp; support
+                      </Link>{" "}
+                      or message us from{" "}
+                      <Link href="/contact" className="font-medium text-amber-800 underline-offset-4 hover:underline">
+                        Contact
+                      </Link>
+                      .
+                    </p>
+                  </div>
+                </aside>
+              </div>
+            ) : (
+              <div className="site-surface-card p-8">{formFields}</div>
+            )}
           </div>
-        </div>
-        </div>
         </div>
       </main>
       <Footer />
