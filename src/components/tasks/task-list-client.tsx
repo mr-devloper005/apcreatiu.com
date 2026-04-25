@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { TaskPostCard } from "@/components/shared/task-post-card";
 import { buildPostUrl } from "@/lib/task-data";
-import { normalizeCategory, isValidCategory } from "@/lib/categories";
+import { normalizeCategory } from "@/lib/categories";
 import type { TaskKey } from "@/lib/site-config";
 import type { SitePost } from "@/lib/site-connector";
 import { getLocalPostsForTask } from "@/lib/local-posts";
@@ -35,19 +35,16 @@ export function TaskListClient({ task, initialPosts, category }: Props) {
 
     const normalizedCategory = category ? normalizeCategory(category) : "all";
     if (normalizedCategory === "all") {
-      return combined.filter((post) => {
-        const content = post.content && typeof post.content === "object" ? post.content : {};
-        const value = typeof (content as any).category === "string" ? (content as any).category : "";
-        return !value || isValidCategory(value);
-      });
+      return combined;
     }
 
     return combined.filter((post) => {
       const content = post.content && typeof post.content === "object" ? post.content : {};
-      const value =
-        typeof (content as any).category === "string"
-          ? normalizeCategory((content as any).category)
-          : "";
+      const contentCategory = typeof (content as any).category === "string" ? (content as any).category : "";
+      const tagCategory = Array.isArray(post.tags)
+        ? post.tags.find((item) => typeof item === "string" && normalizeCategory(item) === normalizedCategory) || ""
+        : "";
+      const value = normalizeCategory(contentCategory || tagCategory);
       return value === normalizedCategory;
     });
   }, [category, initialPosts, localPosts]);
@@ -55,13 +52,16 @@ export function TaskListClient({ task, initialPosts, category }: Props) {
   if (!merged.length) {
     return (
       <div className="rounded-2xl border border-dashed border-border p-10 text-center text-muted-foreground">
-        No posts yet for this section.
+        {category && category !== "all" ? "No posts available for this category." : "No posts yet for this section."}
       </div>
     );
   }
 
+  const gridClassName =
+    task === "listing" ? "grid gap-6 md:grid-cols-2" : "grid gap-6 sm:grid-cols-2 lg:grid-cols-4";
+
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className={gridClassName}>
       {merged.map((post) => {
         const localOnly = (post as any).localOnly;
         const href = localOnly

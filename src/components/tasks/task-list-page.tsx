@@ -19,6 +19,22 @@ export async function TaskListPage({
 }) {
   const taskConfig = getTaskConfig(task);
   const posts = await fetchTaskPosts(task, 30);
+  const categoryLabels = new Map(
+    posts
+      .map((post) => {
+        const content = post.content && typeof post.content === "object" ? post.content : {};
+        const value = typeof (content as any).category === "string" ? (content as any).category.trim() : "";
+        if (!value) return null;
+
+        const normalizedValue = normalizeCategory(value);
+        const matchedOption = CATEGORY_OPTIONS.find(
+          (item) => item.slug === normalizedValue || item.name.toLowerCase() === value.toLowerCase()
+        );
+
+        return [normalizedValue, matchedOption?.name ?? value] as const;
+      })
+      .filter((item): item is readonly [string, string] => Boolean(item))
+  );
   const normalizedCategory = category ? normalizeCategory(category) : "all";
   const intro = taskIntroCopy[task];
   const baseUrl = SITE_CONFIG.baseUrl.replace(/\/$/, "");
@@ -31,7 +47,10 @@ export async function TaskListPage({
 
   const categoryLabel =
     normalizedCategory !== "all"
-      ? CATEGORY_OPTIONS.find((c) => c.slug === normalizedCategory)?.name ?? null
+      ? categoryLabels.get(normalizedCategory) ??
+        CATEGORY_OPTIONS.find((c) => c.slug === normalizedCategory)?.name ??
+        category ??
+        null
       : null;
 
   const headerEyebrow =
@@ -44,23 +63,55 @@ export async function TaskListPage({
     task === "listing" && categoryLabel
       ? `Businesses and services in the ${categoryLabel} category. Change the filter below to explore other industries.`
       : "Browse by category to narrow results.";
+  const isListingPage = task === "listing";
 
   return (
-    <div className="site-shell">
+    <div className={isListingPage ? "site-shell bg-[#f7f3eb]" : "site-shell"}>
       <NavbarShell />
-      <div className="site-page-header">
+      <div
+        className={
+          isListingPage
+            ? "relative overflow-hidden border-b border-amber-200/70 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.16),transparent_34%),linear-gradient(135deg,#fffaf0_0%,#ffffff_48%,#f4efe6_100%)]"
+            : "site-page-header"
+        }
+      >
+        {isListingPage ? (
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-90"
+            aria-hidden
+          />
+        ) : null}
         <div className="site-page-header-inner">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-neutral-500">
+              <p
+                className={
+                  isListingPage
+                    ? "text-xs font-semibold uppercase tracking-[0.22em] text-amber-800"
+                    : "text-xs font-semibold uppercase tracking-[0.22em] text-neutral-500"
+                }
+              >
                 {headerEyebrow}
               </p>
-              <h1 className="mt-2 font-sans text-3xl font-bold tracking-tight text-neutral-950 sm:text-4xl">
+              <h1
+                className={
+                  isListingPage
+                    ? "mt-2 font-[family-name:var(--font-fraunces)] text-3xl font-semibold tracking-tight text-neutral-950 sm:text-5xl"
+                    : "mt-2 font-sans text-3xl font-bold tracking-tight text-neutral-950 sm:text-4xl"
+                }
+              >
                 {headerTitle}
               </h1>
-              <p className="mt-2 text-sm text-neutral-600">{headerSub}</p>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-base">{headerSub}</p>
             </div>
-            <form className="flex flex-wrap items-center gap-3" action={taskConfig?.route || "#"}>
+            <form
+              className={
+                isListingPage
+                  ? "flex flex-wrap items-center gap-3 rounded-xl border border-white/70 bg-white/80 p-3 shadow-sm backdrop-blur"
+                  : "flex flex-wrap items-center gap-3"
+              }
+              action={taskConfig?.route || "#"}
+            >
               <label className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
                 Category
               </label>
@@ -120,7 +171,13 @@ export async function TaskListPage({
         ) : null}
 
         {intro ? (
-          <section className="site-surface-card mb-12 p-6 sm:p-8">
+          <section
+            className={
+              isListingPage
+                ? "mb-12 rounded-xl border border-amber-200/60 bg-white/85 p-6 shadow-sm backdrop-blur sm:p-8"
+                : "site-surface-card mb-12 p-6 sm:p-8"
+            }
+          >
             <h2 className="font-sans text-2xl font-bold tracking-tight text-neutral-950">{intro.title}</h2>
             {intro.paragraphs.map((paragraph) => (
               <p key={paragraph.slice(0, 40)} className="mt-4 text-sm leading-relaxed text-neutral-600">
