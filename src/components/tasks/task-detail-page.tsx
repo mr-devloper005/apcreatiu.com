@@ -218,7 +218,7 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
   const schemaPayload = articleSchema ? [articleSchema, breadcrumbSchema] : breadcrumbSchema;
 
   return (
-    <div className="site-shell">
+    <div className="site-shell bg-[#f6f1e8]">
       <NavbarShell />
       <main className="site-container flex-1 py-10 sm:py-12">
         <SchemaJsonLd data={schemaPayload} />
@@ -231,11 +231,11 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
 
         <div
           className={cn(
-            "grid gap-10",
-            hideSidebar ? "lg:grid-cols-1" : "lg:grid-cols-[2fr_1fr]"
+            "grid gap-8 xl:gap-10",
+            hideSidebar ? "lg:grid-cols-1" : "lg:grid-cols-[minmax(0,1.7fr)_minmax(320px,0.95fr)] lg:items-start"
           )}
         >
-          <div className={cn(isClassified ? "space-y-8" : "")}>
+          <div className={cn("order-2 min-w-0", isClassified ? "space-y-8" : "")}>
             {isArticle ? (
               <div className="mx-auto w-full max-w-4xl space-y-6">
                 <h1 className="text-4xl font-semibold leading-tight text-foreground">
@@ -286,7 +286,7 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
                   </div>
                 ) : null}
 
-                <div className={cn(isClassified ? "mx-auto w-full max-w-4xl" : "mt-6")}>
+                <div className={cn(isClassified ? "mx-auto w-full max-w-4xl" : "mt-6 pr-0 xl:pr-4")}>
                   <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                     <Badge variant="secondary" className="inline-flex items-center gap-1">
                       <Tag className="h-3.5 w-3.5" />
@@ -300,7 +300,7 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
                     )}
                   </div>
                   <h1 className="mt-4 text-3xl font-semibold text-foreground">{post.title}</h1>
-                  <RichContent html={descriptionHtml} className="mt-3 max-w-3xl" />
+                  <RichContent html={descriptionHtml} className="mt-3 max-w-none" />
                 </div>
               </>
             ) : null}
@@ -361,13 +361,13 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
             ) : null}
 
             {isClassified && mapEmbedUrl ? (
-              <div className="mx-auto w-full max-w-4xl rounded-2xl border border-border bg-card p-4">
+              <div className="mx-auto w-full max-w-4xl rounded-2xl border border-border bg-card p-4 sm:p-5">
                 <p className="text-sm font-semibold text-foreground">Location map</p>
                 <div className="mt-4 overflow-hidden rounded-xl border border-border">
                   <iframe
                     title="Business location map"
                     src={mapEmbedUrl}
-                    className="h-56 w-full"
+                    className="h-[320px] w-full sm:h-[380px] xl:h-[460px]"
                     loading="lazy"
                   />
                 </div>
@@ -377,7 +377,7 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
           </div>
 
           {!hideSidebar ? (
-            <aside className="space-y-6">
+            <aside className="order-1 space-y-6 lg:sticky lg:top-24">
             <div className="rounded-2xl border border-border bg-card p-6">
               <h2 className="text-lg font-semibold text-foreground">Listing details</h2>
                 <div className="mt-4 space-y-3 text-sm text-muted-foreground">
@@ -428,13 +428,13 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
             </div>
 
             {mapEmbedUrl ? (
-              <div className="rounded-2xl border border-border bg-card p-4">
+              <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
                 <p className="text-sm font-semibold text-foreground">Location map</p>
                 <div className="mt-4 overflow-hidden rounded-xl border border-border">
                   <iframe
                     title="Business location map"
                     src={mapEmbedUrl}
-                    className="h-56 w-full"
+                    className="h-[320px] w-full sm:h-[380px] xl:h-[460px]"
                     loading="lazy"
                   />
                 </div>

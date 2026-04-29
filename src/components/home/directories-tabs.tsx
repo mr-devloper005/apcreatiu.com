@@ -15,11 +15,14 @@ const TAB_ITEMS: Array<{ label: string; slug: string | null }> = [
 function postInCategory(post: SitePost, slug: string | null) {
   if (!slug) return true;
   const content = post.content && typeof post.content === "object" ? post.content : {};
-  const raw =
+  const contentCategory =
     typeof (content as { category?: string }).category === "string"
       ? (content as { category: string }).category
       : "";
-  return normalizeCategory(raw) === slug;
+  const tagCategory = Array.isArray(post.tags)
+    ? post.tags.find((item) => typeof item === "string" && normalizeCategory(item) === slug) || ""
+    : "";
+  return normalizeCategory(contentCategory || tagCategory) === slug;
 }
 
 export function DirectoriesTabs({ posts }: { posts: SitePost[] }) {
@@ -63,17 +66,23 @@ export function DirectoriesTabs({ posts }: { posts: SitePost[] }) {
           );
         })}
       </div>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        {slice.map((post, idx) => (
-          <TaskPostCard
-            key={`${post.id}-${activeSlug ?? "all"}-${idx}`}
-            post={post}
-            href={buildPostUrl("listing", post.slug)}
-            taskKey="listing"
-            className="rounded-xl border border-neutral-200/90 bg-white shadow-sm hover:shadow-md"
-          />
-        ))}
-      </div>
+      {slice.length ? (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          {slice.map((post, idx) => (
+            <TaskPostCard
+              key={`${post.id}-${activeSlug ?? "all"}-${idx}`}
+              post={post}
+              href={buildPostUrl("listing", post.slug)}
+              taskKey="listing"
+              className="rounded-xl border border-neutral-200/90 bg-white shadow-sm hover:shadow-md"
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-neutral-300 bg-neutral-50 px-6 py-10 text-center text-sm text-neutral-500">
+          No posts available for this category.
+        </div>
+      )}
     </div>
   );
 }

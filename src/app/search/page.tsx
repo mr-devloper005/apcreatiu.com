@@ -7,11 +7,11 @@ import { buildPostUrl, getPostTaskKey } from "@/lib/task-data";
 import { getMockPostsForTask } from "@/lib/mock-posts";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { TaskPostCard } from "@/components/shared/task-post-card";
+import { normalizeCategory } from "@/lib/categories";
 
 export const revalidate = 3;
 
-const matchText = (value: string, query: string) =>
-  value.toLowerCase().includes(query);
+const matchText = (value: string, query: string) => value.toLowerCase().includes(query);
 
 const stripHtml = (value: string) => value.replace(/<[^>]*>/g, " ");
 
@@ -28,36 +28,39 @@ export default async function SearchPage({
   const resolved = (await searchParams) || {};
   const query = (resolved.q || "").trim();
   const normalized = query.toLowerCase();
-  const category = (resolved.category || "").trim().toLowerCase();
+  const category = normalizeCategory((resolved.category || "").trim());
   const task = (resolved.task || "").trim().toLowerCase();
   const useMaster = resolved.master !== "0";
   const feed = await fetchSiteFeed(
     useMaster ? 1000 : 300,
-    useMaster
-      ? { fresh: true, category: category || undefined, task: task || undefined }
-      : undefined
+    useMaster ? { fresh: true, category: category || undefined, task: task || undefined } : undefined
   );
   const posts =
     feed?.posts?.length
       ? feed.posts
       : useMaster
         ? []
-        : SITE_CONFIG.tasks.flatMap((task) => getMockPostsForTask(task.key));
+        : SITE_CONFIG.tasks.flatMap((taskItem) => getMockPostsForTask(taskItem.key));
 
   const filtered = posts.filter((post) => {
     const content = post.content && typeof post.content === "object" ? post.content : {};
     const typeText = compactText((content as any).type);
     if (typeText === "comment") return false;
+
     const description = compactText((content as any).description);
     const body = compactText((content as any).body);
     const excerpt = compactText((content as any).excerpt);
-    const categoryText = compactText((content as any).category);
+    const contentCategory = typeof (content as any).category === "string" ? normalizeCategory((content as any).category) : "";
+    const tagCategory = Array.isArray(post.tags)
+      ? post.tags.find((item) => typeof item === "string" && normalizeCategory(item) === category) || ""
+      : "";
     const tags = Array.isArray(post.tags) ? post.tags.join(" ") : "";
     const tagsText = compactText(tags);
-    const derivedCategory = categoryText || tagsText;
-    if (category && !derivedCategory.includes(category)) return false;
+
+    if (category && contentCategory !== category && !tagCategory) return false;
     if (task && typeText && typeText !== task) return false;
     if (!normalized.length) return true;
+
     return (
       matchText(compactText(post.title || ""), normalized) ||
       matchText(compactText(post.summary || ""), normalized) ||
@@ -76,7 +79,7 @@ export default async function SearchPage({
       description={
         query
           ? `Results for "${query}"`
-          : "Search across all content types—or focus on business listings from the homepage and directory."
+          : "Search across all content types or focus on business listings from the homepage and directory."
       }
       actions={
         <form action="/search" className="flex w-full gap-2 sm:w-auto">
@@ -88,7 +91,7 @@ export default async function SearchPage({
             <Input
               name="q"
               defaultValue={query}
-              placeholder="Search listings, articles, and more…"
+              placeholder="Search listings, articles, and more..."
               className="h-11 pl-9"
             />
           </div>
@@ -101,14 +104,14 @@ export default async function SearchPage({
       {results.length ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((post) => {
-            const task = getPostTaskKey(post);
-            const href = task ? buildPostUrl(task, post.slug) : `/posts/${post.slug}`;
+            const postTask = getPostTaskKey(post);
+            const href = postTask ? buildPostUrl(postTask, post.slug) : `/posts/${post.slug}`;
             return <TaskPostCard key={post.id} post={post} href={href} />;
           })}
         </div>
       ) : (
         <div className="rounded-2xl border border-dashed border-border p-10 text-center text-muted-foreground">
-          No matching posts yet.
+          No posts available for this category or search.
         </div>
       )}
     </PageShell>
