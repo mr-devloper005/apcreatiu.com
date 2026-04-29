@@ -3,14 +3,13 @@
 import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { Search, Menu, X, Building2, LayoutGrid } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
 import { SITE_CONFIG, type TaskKey } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
 import { siteContent } from '@/config/site.content'
-import { CATEGORY_OPTIONS } from '@/lib/categories'
 
 const NavbarAuthControls = dynamic(() => import('@/components/shared/navbar-auth-controls').then((mod) => mod.NavbarAuthControls), {
   ssr: false,
@@ -30,24 +29,17 @@ const taskIcons: Record<TaskKey, any> = {
   comment: Building2,
 }
 
-const CENTER_NAV_CATS = CATEGORY_OPTIONS.slice(0, 9)
-
 const navLinkBase =
   'shrink-0 whitespace-nowrap rounded-md px-2.5 py-2 text-sm font-medium transition-colors'
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const { isAuthenticated } = useAuth()
-
-  const categoryParam = (searchParams.get('category') || '').trim().toLowerCase()
 
   const isHomeActive = pathname === '/'
   const isSearchActive = pathname === '/search'
-  const isAllListingsActive = pathname.startsWith('/listings') && !categoryParam
-  const isCategoryActive = (slug: string) =>
-    pathname === '/listings' && categoryParam === slug.toLowerCase()
+  const isAllListingsActive = pathname.startsWith('/listings')
 
   const navigation = useMemo(
     () => SITE_CONFIG.tasks.filter((task) => task.enabled && task.key === 'listing'),
@@ -94,18 +86,6 @@ export function Navbar() {
           >
             {siteContent.navbar.categoriesNav}
           </Link>
-          {CENTER_NAV_CATS.map((cat) => (
-            <Link
-              key={cat.slug}
-              href={`/listings?category=${encodeURIComponent(cat.slug)}`}
-              className={cn(
-                navLinkBase,
-                isCategoryActive(cat.slug) ? activeNavClass : inactiveNavClass,
-              )}
-            >
-              {cat.name}
-            </Link>
-          ))}
         </div>
 
         <div className="flex shrink-0 items-center justify-end gap-1.5 sm:gap-2">
@@ -183,21 +163,6 @@ export function Navbar() {
             >
               {siteContent.navbar.categoriesNav}
             </Link>
-            {CENTER_NAV_CATS.map((cat) => (
-              <Link
-                key={cat.slug}
-                href={`/listings?category=${encodeURIComponent(cat.slug)}`}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={cn(
-                  'flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm',
-                  isCategoryActive(cat.slug)
-                    ? 'bg-neutral-950 font-medium text-white'
-                    : 'text-neutral-600',
-                )}
-              >
-                {cat.name}
-              </Link>
-            ))}
             {mobileNavigation.map((item) => {
               const isActive = pathname.startsWith(item.href)
               return (
