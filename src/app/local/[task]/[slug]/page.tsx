@@ -267,7 +267,7 @@ export default function LocalPostDetailPage() {
                   </div>
                 </div>
               ) : null}
-            </div>
+            </aside>
           </div>
         )}
         </div>
