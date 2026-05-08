@@ -1,44 +1,18 @@
 "use client";
 
-import Link from "next/link";
-import { useMemo, useState } from "react";
-import { Clock, Mail, MapPin, Send } from "lucide-react";
+import { useState } from "react";
+import { Clock, MapPin, Send } from "lucide-react";
 import { PageShell } from "@/components/shared/page-shell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { SITE_CONFIG } from "@/lib/site-config";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
-
-  const contactOptions = useMemo(
-    () => [
-      {
-        title: "General support",
-        detail: `support@${SITE_CONFIG.domain}`,
-        tag: "Email",
-        blurb: "Account access, listing edits, and technical issues.",
-      },
-      {
-        title: "Partnerships",
-        detail: `partners@${SITE_CONFIG.domain}`,
-        tag: "Business",
-        blurb: "Integrations, co-marketing, and enterprise directory programs.",
-      },
-      {
-        title: "Press & media",
-        detail: `press@${SITE_CONFIG.domain}`,
-        tag: "Media",
-        blurb: "Logos, factsheets, and interview requests.",
-      },
-    ],
-    []
-  );
 
   return (
     <PageShell
@@ -131,32 +105,6 @@ export default function ContactPage() {
             </CardContent>
           </Card>
 
-          {contactOptions.map((option) => (
-            <Card key={option.title} className="border-neutral-200/90 bg-white shadow-sm">
-              <CardContent className="p-6">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge className="bg-amber-100 text-amber-950 hover:bg-amber-100">{option.tag}</Badge>
-                </div>
-                <h3 className="mt-3 text-lg font-semibold text-neutral-950">{option.title}</h3>
-                <p className="mt-1 text-sm text-neutral-600">{option.blurb}</p>
-                <a
-                  href={`mailto:${option.detail}`}
-                  className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-amber-800 underline-offset-4 hover:underline"
-                >
-                  <Mail className="h-4 w-4" aria-hidden />
-                  {option.detail}
-                </a>
-              </CardContent>
-            </Card>
-          ))}
-
-          <p className="px-1 text-center text-xs text-neutral-500 lg:text-left">
-            Prefer self-serve?{" "}
-            <Link href="/help" className="font-medium text-neutral-800 underline-offset-4 hover:underline">
-              Browse the help center
-            </Link>
-            .
-          </p>
         </div>
       </div>
     </PageShell>

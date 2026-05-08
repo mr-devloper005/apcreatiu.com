@@ -90,7 +90,7 @@ export function HeroSection({ images }: { images: string[] }) {
         <div className="rounded-2xl border border-white/10 bg-white p-5 shadow-[0_24px_80px_rgba(0,0,0,0.35)] sm:p-6">
           <form action="/search" method="get" className="space-y-4">
             <input type="hidden" name="master" value="1" />
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2">
               <label className="block">
                 <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
                   Location
@@ -121,16 +121,6 @@ export function HeroSection({ images }: { images: string[] }) {
                     </option>
                   ))}
                 </select>
-              </label>
-              <label className="block">
-                <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
-                  Date
-                </span>
-                <input
-                  type="date"
-                  name="date"
-                  className="h-11 w-full rounded-lg border border-neutral-200 bg-neutral-50 px-3 text-sm text-neutral-900 outline-none focus:border-neutral-400"
-                />
               </label>
             </div>
             <div className="flex justify-center pt-1">
